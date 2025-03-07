@@ -1,0 +1,113 @@
+# Diagrama de Conexiones de Módulos en Proyecto Agenda RAG
+
+## Flujo Principal de Conexiones
+
+```mermaid
+graph TD
+    A[main.py] --> B[api/routes.py]
+    B --> C{Servicios}
+    C --> D[services/evento_service.py]
+    C --> E[services/agent_service.py]
+    
+    D --> F[repositories/evento_repository.py]
+    E --> G[langgraph/agent.py]
+    
+    F --> H[core/database.py]
+    G --> I[langgraph/retrieval.py]
+    G --> J[langgraph/generation.py]
+    
+    B --> K[models/evento.py]
+    B --> L[models/agent_state.py]
+    
+    subgraph Configuración
+        M[core/config.py]
+    end
+```
+
+## Descripción Detallada de Conexiones
+
+### 1. Punto de Entrada (main.py)
+- Inicializa la aplicación FastAPI
+- Configuración inicial de base de datos
+- Punto de arranque del servidor
+
+### 2. Rutas API (api/routes.py)
+- Define endpoints HTTP
+- Usa modelos de validación
+- Llama a servicios correspondientes
+- Maneja respuestas y errores
+
+### 3. Servicios
+#### evento_service.py
+- Lógica de negocio para eventos
+- Usa repositorio para operaciones CRUD
+- Valida y procesa datos de eventos
+
+#### agent_service.py
+- Gestiona interacciones con agente conversacional
+- Procesa consultas
+- Maneja historial de conversación
+
+### 4. Repositorios
+#### evento_repository.py
+- Operaciones directas con base de datos
+- Consultas SQL
+- Gestión de conexiones
+
+### 5. LangGraph
+#### agent.py
+- Configuración del grafo del agente
+- Define flujo de procesamiento de lenguaje
+- Integra componentes de recuperación y generación
+
+#### retrieval.py
+- Recuperación semántica de información
+- Usa embeddings
+- Búsqueda en índice de vectores
+
+#### generation.py
+- Generación de respuestas
+- Usa modelo de lenguaje
+- Procesa contexto y genera texto
+
+### 6. Modelos
+#### evento.py
+- Definiciones de modelos Pydantic
+- Validación de datos
+- Tipos de eventos
+
+#### agent_state.py
+- Estructura de estado del agente
+- Define tipos para conversación
+
+### 7. Configuración
+#### config.py
+- Variables de entorno
+- Configuraciones centralizadas
+- Parámetros de servicios externos
+
+## Flujo de una Solicitud Típica
+
+1. Solicitud HTTP llega a routes.py
+2. Routes valida datos con modelos
+3. Llama al servicio correspondiente
+4. Servicio usa repositorio/agente
+5. Repositorio consulta base de datos
+6. Servicio procesa y formatea respuesta
+7. Routes devuelve respuesta HTTP
+```
+
+## Consideraciones de Diseño
+
+- Desacoplamiento entre capas
+- Principio de responsabilidad única
+- Fácil extensibilidad
+- Separación clara de concerns
+
+## Patrón de Arquitectura
+
+Implementa una arquitectura hexagonal (puertos y adaptadores) con capas:
+- Presentación (routes)
+- Aplicación (services)
+- Dominio (models)
+- Infraestructura (repositories, langgraph)

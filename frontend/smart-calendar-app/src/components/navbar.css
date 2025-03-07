@@ -1,0 +1,17 @@
+@keyframes bounce-in-top {
+    0% {
+      transform: translateY(-50px) scale(0.8);
+      opacity: 0;
+    }
+    70% {
+      transform: translateY(10px);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .animate-bounce-in-top {
+    animation: bounce-in-top 0.6s ease-out both;
+  }

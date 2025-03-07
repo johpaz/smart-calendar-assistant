@@ -1,0 +1,10 @@
+/tu_proyecto
+├── main.py
+├── routes.py
+└── tools
+    ├── __init__.py
+    ├── agent.py
+    ├── database.py
+    ├── scheduler.py
+    ├── tts_manager.py        # (opcional, para TTS)
+    └── input_router.py       # (opcional, para entrada de voz/CLI)

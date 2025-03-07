@@ -1,0 +1,64 @@
+                        +----------------------+
+                        |    Cliente (UI)      |
+                        |  (Texto / Voz)       |
+                        +-----------+----------+
+                                    |
+                                    v
+                         +-----------------------+
+                         | Input Type Validator  |
+                         | (Determina si es texto|
+                         |  o voz)               |
+                         +-----------+----------+
+                                     |
+                +--------------------+----------------------+
+                |                                           |
+                v                                           v
+      +----------------------+                    +-------------------------+
+      |  Texto Handler       |                    | Voice-to-Text Converter |
+      | (Procesa directamente|                    | (Convierte entrada de   |
+      |  el mensaje)         |                    |  voz a texto)           |
+      +-----------+----------+                    +-----------+-------------+
+                                     \                      /
+                                      \                    /
+                                       \                  /
+                                        v                v
+                              +------------------------------+
+                              |         NLP Engine           |
+                              | (Interpretación de intención |
+                              |  y extracción de datos JSON) |
+                              +--------------+---------------+
+                                             |
+                                             v
+                                  +-------------------------+
+                                  |   Agenda Management     |
+                                  |-------------------------|
+                                  | - Valida que la fecha   |
+                                  |   esté entre lunes y    |
+                                  |   viernes, de 8am a 5pm |
+                                  |   (hora Colombia)       |
+                                  | - Verifica conflictos   |
+                                  |   con eventos existentes|
+                                  +--------------+----------+
+                                             |
+                                             v
+                                  +-------------------------+
+                                  |    Base de Datos        |
+                                  | (Registro de eventos)   |
+                                  +--------------+----------+
+                                             |
+                                             v
+                                  +-------------------------+
+                                  |  Response Generator     |
+                                  |-------------------------|
+                                  | - Respuesta JSON con    |
+                                  |   confirmación o error  |
+                                  | - Opción de síntesis de |
+                                  |   voz (si es necesario) |
+                                  +--------------+----------+
+                                             |
+                                             v
+                                  +-------------------------+
+                                  | Endpoint Consultas      |
+                                  | (Listado de fechas y    |
+                                  |  horarios reservados)   |
+                                  +-------------------------+

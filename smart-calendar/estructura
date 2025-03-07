@@ -1,0 +1,49 @@
+proyecto-agenda-rag/
+│
+├── src/
+│   ├── __init__.py
+│   │
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── config.py           # Configuraciones y variables de entorno
+│   │   └── database.py         # Configuración de conexión a base de datos
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── evento.py           # Modelos Pydantic para validación
+│   │   └── agent_state.py      # Estado del agente
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── evento_service.py   # Lógica de negocio para eventos
+│   │   └── agent_service.py    # Servicios relacionados con el agente
+│   │   └── transcription_service.py    # Servicios relacionados con transcripción
+│   │
+│   ├── repositories/
+│   │   ├── __init__.py
+│   │   └── evento_repository.py # Operaciones CRUD con la base de datos
+│   ├── state/
+    ├── tools/│
+    ├── utils/│
+│   └── langgraph/
+│       ├── __init__.py
+│       ├── agent.py            # Definición del agente conversacionalW
+│   
+├── api/
+│   ├── __init__.py
+│   └── routes_event             # Definición de rutas de FastAPI
+│   └── routes_rag               # Definición de rutas de FastAPI
+│
+├── data/
+│   ├── agenda.csv
+│   └── initial_data.sql 
+│   └──  crear_agenda_csv.py     
+├── tests/
+│   ├── __init__.py
+│   ├── test_eventos.py
+│   └── test_agent.py
+│
+├── main.py                     # Punto de entrada de la aplicación
+├── requirements.txt
+├── README.md
+└── .env
