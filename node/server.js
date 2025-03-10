@@ -2,13 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const fs = require('fs');
-const { procesarMensaje } = require('./chat');
 const db = require('./database');
 require('dotenv').config();
 const path = require('path');
 const ffmpeg = require('fluent-ffmpeg');
 const OpenAI = require('openai');
-require('dotenv').config();
+const { routeInput } = require('./middleware/router');
+
 
 const app = express();
 app.use(cors());
@@ -27,7 +27,7 @@ app.post('/chat', async (req, res) => {
   }
   
   try {
-    const respuesta = await procesarMensaje(mensaje);
+    const respuesta = await routeInput(mensaje);
     res.json(respuesta);
   } catch (err) {
     console.error('Error detallado:', err);
@@ -35,25 +35,6 @@ app.post('/chat', async (req, res) => {
   }
 });
 
-// Nuevo endpoint para consultar eventos directamente
-app.get('/eventos', (req, res) => {
-  const { fechaInicio, fechaFin } = req.query;
-  const inicio = fechaInicio || '2025-01-01';
-  const fin = fechaFin || '2025-12-31';
-  
-  const query = 'SELECT * FROM eventos WHERE fecha BETWEEN ? AND ? ORDER BY fecha, hora_inicio';
-  db.all(query, [inicio, fin], (err, rows) => {
-    if (err) {
-      console.error('Error al consultar la BD:', err);
-      return res.status(500).json({ status: 'error', mensaje: 'Error al consultar la base de datos.' });
-    }
-    res.json({
-      status: 'success',
-      mensaje: 'Eventos encontrados.',
-      eventos: rows
-    });
-  });
-});
 
 /// Endpoint para transcribir audio y procesarlo en el flujo de conversación
 // Endpoint para transcribir audio, convirtiéndolo a WAV si es necesario
@@ -85,7 +66,7 @@ app.post('/transcribe', upload.single('audio'), async (req, res) => {
           console.log('Transcripción:', transcribedText);
           
           // Integramos la transcripción al flujo de conversación
-          const respuesta = await procesarMensaje(transcribedText);
+          const respuesta = await routeInput(transcribedText);
           res.json({
             status: 'success',
             transcribedText,

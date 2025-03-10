@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EventCards from './EventCard';
 
-const API_BASE_URL =  'http://localhost:3000';
+const API_BASE_URL = 'http://localhost:3000';
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
   const audioChunks = useRef([]);
   const mediaStreamRef = useRef(null);
 
@@ -69,6 +70,7 @@ const Chat = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputText('');
     setIsLoading(true);
+    inputRef.current.focus();
 
     try {
       const response = await fetch(`${API_BASE_URL}/chat`, {
@@ -117,14 +119,13 @@ const Chat = () => {
 
     setMessages(prev => [...prev, userAudioMessage]);
     setIsLoading(true);
+    inputRef.current.focus();
 
     try {
       const formData = new FormData();
-      const mimeType = audioBlob.type.split(';')[0]; // Esto extrae solo "audio/webm"
+      const mimeType = audioBlob.type.split(';')[0];
       const ext = mimeType.split('/')[1] || 'wav';
       formData.append('audio', audioBlob, `recording.${ext}`);
-
-      
 
       const response = await fetch(`${API_BASE_URL}/transcribe`, {
         method: 'POST',
@@ -151,39 +152,39 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-160 bg-gray-100 align-center">
-      <header className="bg-blue-600 p-4 text-white flex justify-between items-center">
-        <h1 className="text-xl font-bold">Smart Calendar Assistant</h1>
+    <div className="flex flex-col h-screen bg-gray-100">
+      <header className="bg-blue-600 p-4 text-white flex justify-between items-center shadow-lg">
+        <h1 className="text-2xl font-bold">Smart Calendar Assistant</h1>
         <button 
           onClick={() => navigate('/')}
-          className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition"
+          className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-transform transform hover:scale-105"
           aria-label="Return to home"
         >
           Volver al Inicio
         </button>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-blue-50 to-gray-100">
         {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.isBot ? 'justify-start' : 'justify-end'} mb-4`}
           >
             <div
-              className={`max-w-3xl w-full p-4 rounded-lg ${
+              className={`max-w-3xl w-full p-4 rounded-2xl ${
                 message.isBot 
                   ? 'bg-white text-gray-800 shadow-md'
                   : 'bg-blue-600 text-white shadow-lg'
-              }`}
+              } transition-all duration-200 ease-out`}
             >
               {message.type === 'audio' ? (
-                <audio controls>
+                <audio controls className="w-full">
                   <source src={message.content} type="audio/wav" />
                   Your browser does not support HTML5 audio
                 </audio>
               ) : (
-                <div className="space-y-2">
-                  <p>{message.content}</p>
+                <div className="space-y-3">
+                  <p className="text-lg">{message.content}</p>
                   {message.events?.length > 0 && <EventCards events={message.events} />}
                 </div>
               )}
@@ -192,11 +193,11 @@ const Chat = () => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <div className="animate-pulse flex space-x-4">
-                <div className="rounded-full bg-gray-300 h-3 w-3"></div>
-                <div className="rounded-full bg-gray-300 h-3 w-3"></div>
-                <div className="rounded-full bg-gray-300 h-3 w-3"></div>
+            <div className="bg-white p-4 rounded-2xl shadow-md">
+              <div className="flex space-x-2">
+                <div className="w-3 h-3 bg-gray-300 rounded-full animate-bounce"></div>
+                <div className="w-3 h-3 bg-gray-300 rounded-full animate-bounce delay-100"></div>
+                <div className="w-3 h-3 bg-gray-300 rounded-full animate-bounce delay-200"></div>
               </div>
             </div>
           </div>
@@ -204,13 +205,13 @@ const Chat = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t bg-white p-4">
+      <div className="border-t bg-white p-4 shadow-lg">
         {error && (
-          <div className="text-red-500 mb-2 flex justify-between items-center">
+          <div className="text-red-500 mb-2 flex justify-between items-center bg-red-50 p-3 rounded-lg">
             <span>{error}</span>
             <button 
               onClick={() => setError('')}
-              className="text-red-700 hover:text-red-900"
+              className="text-red-700 hover:text-red-900 text-xl"
               aria-label="Close error"
             >
               ×
@@ -218,37 +219,42 @@ const Chat = () => {
           </div>
         )}
         
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           <form onSubmit={handleTextSubmit} className="flex-1">
-            <div className="flex space-x-4">
+            <div className="flex gap-4">
               <input
+                ref={inputRef}
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Escribe tu mensaje..."
-                className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 p-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                 disabled={isRecording || isLoading}
                 aria-label="Type your message"
+                autoFocus
               />
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+                className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center gap-2"
                 disabled={isRecording || isLoading}
                 aria-label="Send text message"
               >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                </svg>
                 Enviar
               </button>
             </div>
           </form>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <button
               onClick={toggleRecording}
               className={`p-3 rounded-full ${
                 isRecording 
                   ? 'bg-red-500 animate-pulse' 
                   : 'bg-blue-600 hover:bg-blue-700'
-              } text-white transition disabled:opacity-50`}
+              } text-white transition-all transform hover:scale-105 disabled:opacity-50`}
               disabled={isLoading}
               aria-label={isRecording ? "Stop recording" : "Start recording"}
             >
@@ -266,10 +272,13 @@ const Chat = () => {
             {audioBlob && (
               <button
                 onClick={handleAudioSubmit}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+                className="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-all disabled:opacity-50 flex items-center gap-2"
                 disabled={isLoading}
                 aria-label="Send audio recording"
               >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
+                </svg>
                 Enviar Audio
               </button>
             )}
