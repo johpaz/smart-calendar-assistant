@@ -11,7 +11,7 @@ function hayConflicto(fecha, horaInicio, horaFin, excludeId = null, callback) {
     params.push(excludeId);
   }
 
-  db.all(query, params, (err, rows) => {
+  dataBase.all(query, params, (err, rows) => {
     if (err) return callback(err);
     const conflicto = rows.some(evento => {
       const inicioExistente = new Date(`${evento.fecha}T${evento.hora_inicio}`);
