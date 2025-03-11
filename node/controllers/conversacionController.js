@@ -44,7 +44,7 @@ const routeConversacion = async (mensaje, context, userId) => {
             status: 'success',
             mensaje: completion.choices[0].message.content
         };
-    } catch (error) {
+    } catch (error) {   
         console.error('Error en OpenAI:', error);
         return {
             status: 'error',

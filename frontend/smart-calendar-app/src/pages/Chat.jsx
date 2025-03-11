@@ -152,7 +152,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-full min-h-150 bg-gray-100">
       <header className="bg-blue-600 p-4 text-white flex justify-between items-center shadow-lg">
         <h1 className="text-2xl font-bold">Smart Calendar Assistant</h1>
         <button 
